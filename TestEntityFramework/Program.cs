@@ -1,4 +1,7 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using TestEntityFramework.ApplicationModels;
+using TestEntityFramework.Extensions;
 using TestEntityFramework.Models;
 
 namespace TestEntityFramework
@@ -9,15 +12,20 @@ namespace TestEntityFramework
         {
             using (var context = new MyDbContext())
             {
-                ParameterExpression param = Expression.Parameter(typeof(User), "user");
-                Expression propertyName = Expression.Property(param, nameof(User.UserName));
-                Expression targetValue = Expression.Constant("mGrayson");
-                Expression equalsExpression = Expression.NotEqual(propertyName, targetValue);
-                Expression<Func<User, bool>> lambda = Expression.Lambda<Func<User, bool>>(equalsExpression, param);
-                var query = context.Users.Where(lambda);
-                foreach (var user in query)
+                var sortOrder = new List<SortItem>
                 {
-                    Console.WriteLine($"User: {user.UserName}");
+                    new SortItem { PropertyName = "LastName", Direction = SortDirection.Descending },
+                    new SortItem { PropertyName = "Age", Direction = SortDirection.Ascending }
+                };
+
+                var sortedUsers = context.Users
+                    .AsQueryable()
+                    .ApplySorting(sortOrder)
+                    .ToList();
+
+                foreach (var user in sortedUsers)
+                {
+                    Console.WriteLine($"{user.LastName} {user.Age}");
                 }
             }
             Console.ReadLine();

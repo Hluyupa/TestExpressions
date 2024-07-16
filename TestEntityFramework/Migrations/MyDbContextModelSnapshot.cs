@@ -51,6 +51,9 @@ namespace TestEntityFramework.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
+
                     b.Property<int>("DepartmentId")
                         .HasColumnType("integer");
 
@@ -59,6 +62,9 @@ namespace TestEntityFramework.Migrations
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
+
+                    b.Property<int>("Salary")
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserName")
                         .IsRequired()
